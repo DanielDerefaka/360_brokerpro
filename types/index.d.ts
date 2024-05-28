@@ -8,16 +8,64 @@ declare type SearchParamProps = {
 // ========================================
 
 declare type SignUpParams = {
-  firstName: string;
-  lastName: string;
-  address1: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  dateOfBirth: string;
-  ssn: string;
+  firstName?: string;
+  lastName?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  dateOfBirth?: string;
+  ssn?: string;
   email: string;
   password: string;
+};
+
+declare type Deposit = {
+
+  deposit?: string;
+  amount?: string;
+  user?: string;
+  file?: any
+
+
+}
+
+declare type Withdraw = {
+
+  withdrawAddress?: string;
+  amount?: number;
+  user?: string;
+  balance?:string
+
+}
+
+declare type UpdateBalance = {
+
+  amount?: string;
+
+  
+
+
+}
+
+declare type UpdateStatus = {
+
+  status?: string;
+  transactionId?: string;
+  userId?: string;
+amount?:string;
+
+  
+
+
+}
+
+declare type OtpParams = {
+
+  userId?: string
+  otp?: string
+
+
 };
 
 declare type LoginUser = {
@@ -33,6 +81,7 @@ declare type User = {
   dwollaCustomerId: string;
   firstName: string;
   lastName: string;
+  name: string;
   address1: string;
   city: string;
   state: string;
@@ -208,8 +257,23 @@ declare interface TotlaBalanceBoxProps {
   totalCurrentBalance: number;
 }
 
+declare interface UserDataProps {
+  userData: string;
+  firstname: string;
+  lastName:string,
+  DateofBirth:string, 
+  Address:string,
+  State:string, 
+  Balance:string,
+  Email: string,
+  UserId: string
+  balance: string;
+  
+}
+
 declare interface FooterProps {
   user: User;
+  type?: 'mobile' | 'desktop'
 }
 
 declare interface RightSidebarProps {
@@ -301,6 +365,15 @@ declare interface getUserInfoProps {
   userId: string;
 }
 
+declare interface getUsersTransactionId {
+  transactionId: string;
+}
+
+
+declare interface UserbalanceProps{
+ 
+  userId: string;
+}
 declare interface exchangePublicTokenProps {
   publicToken: string;
   user: User;
@@ -325,4 +398,13 @@ declare interface getBankProps {
 
 declare interface getBankByAccountIdProps {
   accountId: string;
+}
+
+declare interface admincollectionProps {
+  ADMIN_COLLECTION_ID:string
+}
+
+declare interface UserTransactionDoc {
+ transactionId: string
+  // Add other fields as necessary
 }
