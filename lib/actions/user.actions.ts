@@ -15,6 +15,8 @@ const {
   APPWRITE_TRANSACTION_COLLECTION_ID: TRANSACTION_ID,
   APPWRITE_TRANSACTION_WITHDRAW_COLLECTION_ID: WITHDRAW_ID,
   APPWRITE_STORAGE_ID: STORAGE_ID,
+  APPWRITE_WALLET_COLLECTION_ID: WALLET_ID
+  
 } = process.env;
 
 interface UserDocument {
@@ -36,6 +38,22 @@ export const getUserInfo = async ({ userId }: getUserInfoProps) => {
     );
 
     return parseStringify(user.documents[0]);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getWallet = async () => {
+  try {
+    const { database } = await createAdminClient();
+
+    const user = await database.listDocuments(
+      DATABASE_ID!,
+      WALLET_ID!,
+    );
+
+    return parseStringify(user.documents[0]);
+    console.log(user.documents[0])
   } catch (error) {
     console.log(error);
   }
@@ -363,6 +381,38 @@ export const UserWithdraw = async (userData: Withdraw, balance: any) => {
     throw error; // Re-throw for potential error handling in the frontend
   }
 };
+
+export const WalletAddress = async (userData: Wallet) => {
+  try {
+    // Mutation (Create user account)
+    const { database } = await createAdminClient();
+
+    const { account } = await createSessionClient();
+
+    
+   
+
+
+    const newUser = await database.createDocument(
+      DATABASE_ID!,
+      WALLET_ID!,
+      ID.unique(),
+
+      {
+        ...userData,
+      
+      }
+    );
+
+    
+    return parseStringify(newUser); // Shouldn't normally reach here
+  } catch (error) {
+    console.error("Wallet Error:", error);
+    throw error; // Re-throw for potential error handling in the frontend
+  }
+};
+
+
 
 export const getUserTransaction = async ({ userId }: getUserInfoProps) => {
   try {

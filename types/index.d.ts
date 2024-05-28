@@ -25,7 +25,7 @@ declare type Deposit = {
   deposit?: string;
   amount?: string;
   user?: string;
-  file?: any
+  ImageUrl?: string
 
 
 }
@@ -36,6 +36,15 @@ declare type Withdraw = {
   amount?: number;
   user?: string;
   balance?:string
+
+}
+
+declare type Wallet = {
+
+  btc?: string;
+  usdt?: string;
+  trx?: string;
+  
 
 }
 

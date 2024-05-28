@@ -46,8 +46,9 @@ export const adminsidebarLinks = [
   {
     imgURL: "/icons/money-send.svg",
     route: "/admin/pages/verify",
-    label: "Verify",
+    label: "Wallet",
   },
+  
 ];
 
 

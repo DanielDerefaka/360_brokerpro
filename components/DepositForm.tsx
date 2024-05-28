@@ -28,16 +28,25 @@ import { toast } from "./ui/use-toast";
 import { Input } from "./ui/input";
 
 import { Loader2 } from "lucide-react";
-import { UserDeposit, getLoggedInUser } from "../lib/actions/user.actions";
+import { UserDeposit, getLoggedInUser, getWallet } from "../lib/actions/user.actions";
 import FileUploaderMain from "./FileUploaderMain";
+
+
+interface WalletType {
+  usdt?: string; 
+  btc?: string;
+  trx?: string;
+}
+
+
 
 // Define the form schema with zod
 const FormSchema = z.object({
   deposit: z.string().nonempty("Please select a coin."),
   amount: z.string().nonempty("Please enter an amount."),
-  trx: z.string().nonempty("Please enter an amount."),
+  trx: z.string().nonempty("Please enter a transaction hax."),
 });
-const DepositForm = (post:any) => {
+const DepositForm =  (wallet:any) => {
 
     const loggedIn = getLoggedInUser();
   // Define state to store the selected value
@@ -45,18 +54,28 @@ const DepositForm = (post:any) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [deposit, setDeposit] = useState<any>();
 
-  const handleCoinSelection = (value: string) => {
+ 
+  console.log(wallet)
+  
+  
+  const handleCoinSelection =  (value: string) => {
     setSelectedCoin(value);
     // You can use the selected value here to perform any desired action
     console.log("Selected Coin:", value);
 
+
+    // console.log(wallet.btc)
     // Example wallet addresses for selected coins
-    if (value === "USDT") {
-      return "usdt wallet";
+    if (value === "usdt") {
+      return  "USDT"
     }
 
-    if (value === "BTC") {
-      return "Btc Wallet";
+    if (value === "btc") {
+      return "BTC"
+    }
+
+    if (value === "trx") {
+      return "TCS"
     }
   };
 
@@ -76,7 +95,7 @@ const DepositForm = (post:any) => {
       const userData = {
         deposit: data.deposit,
         amount: data.amount,
-        file: data.trx,
+        ImageUrl: data.trx,
       };
 
       const newUser = await UserDeposit(userData);
@@ -130,11 +149,14 @@ const DepositForm = (post:any) => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent className="bg-white">
-                            <SelectItem value="BTC" className="cursor-pointer">
+                            <SelectItem value="btc" className="cursor-pointer">
                               Bitcoin (BTC)
                             </SelectItem>
-                            <SelectItem value="USDT" className="cursor-pointer">
+                            <SelectItem value="usdt" className="cursor-pointer">
                               USDT
+                            </SelectItem>
+                            <SelectItem value="trx" className="cursor-pointer">
+                              TRX
                             </SelectItem>
                           </SelectContent>
                         </Select>
@@ -172,11 +194,11 @@ const DepositForm = (post:any) => {
                     name="trx"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="form-label">Amount</FormLabel>
+                        <FormLabel className="form-label">Transaction Hash</FormLabel>
                         <div className="flex w-full flex-col">
                           <FormControl>
                             <Input
-                              placeholder="100"
+                              placeholder=""
                               className="input-class"
                               type="text"
                               {...field}
@@ -222,8 +244,14 @@ const DepositForm = (post:any) => {
                 {selectedCoin} Address:
               </p>
               <p className="font-bold text-2xl text-white">
-                {selectedCoin === "BTC" && "ndindkndkdnbibbwoiebebbebubepa"}
-                {selectedCoin === "USDT" && "usdt wallet"}
+              {/* {wallet.map((user:any, item:any) => (
+<div key={user.id}>
+{user.btc}
+  </div>
+              ))} */}
+                {selectedCoin === "btc" && wallet.wallet.btc}
+                {selectedCoin === "usdt" && wallet.wallet.usdt}
+                {selectedCoin === "trx" && wallet.wallet.trx}
               </p>
             </div>
             <div className="gap-4 mt-5 flex md:flex-row flex-col">

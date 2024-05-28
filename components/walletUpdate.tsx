@@ -42,25 +42,23 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import FileUpload from "@/components/global/file-upload";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import { UserDeposit, UserWithdraw } from "@/lib/actions/user.actions";
+import { UserDeposit, UserWithdraw, WalletAddress } from "@/lib/actions/user.actions";
 
 
 
 const FormSchema = z.object({
-    walletAddress: z.string({
-      required_error: "Please a coin.",
-    }),
+    btc: z.string(),
+    usdt: z.string(),
+    trx: z.string(),
   
-    amount: z.coerce.number({
-      required_error: "Please enter an amount.",
-    }),
+    
   
    
   
   });
 
 
-const WithdrawForm = (balance:any) => {
+const WalletUpdate = (balance:any) => {
     const [selectedCoin, setSelectedCoin] = useState("");
     const [isLoading, setisLoading] = useState(false);
     const [deposit, setdeposit] = useState(null);
@@ -74,8 +72,9 @@ const WithdrawForm = (balance:any) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-    walletAddress: "",
-      amount: 0,
+      btc: "",
+      usdt: "",
+      trx: "",
     },
   });
 
@@ -98,34 +97,26 @@ const WithdrawForm = (balance:any) => {
 
       const userData = {
         
-        walletAddress: data.walletAddress,
-        amount: data.amount,
+        btc: data.btc,
+        usdt: data.usdt,
+        trx: data.trx,
       
        
       }
-      const amount = data.amount
+     
 
      
-const balanced = balance.balance
 
 
-if ( amount <= balanced) {
-  const newUser = await UserWithdraw(userData, balance);
+
+
+  const newUser = await WalletAddress(userData);
 
   form.reset()
   toast({
-    title: "Withdrawal Successfully Placed", 
+    title: "Wallet Addresses Successfully Placed", 
   });
-  
-} else {
-  toast({
-    title: "Insufficient balance",
-  });
-}
-      
-console.log(balance, amount)
 
-     
 
     } catch (error) {
       console.log(error)
@@ -141,17 +132,16 @@ console.log(balance, amount)
     
       <Card className="p-4 flex-1">
         <CardHeader>
-          <CardTitle>Withdraw</CardTitle>
+          <CardTitle>Wallet Section</CardTitle>
         </CardHeader>
         <CardContent>
           <CardDescription>
             <p>
               {" "}
-              To withdraw funds input your wallet address, please
-              contact our support team to assist you with your deposit.
+              Update deposit wallelt addresses
             </p>
             <Separator className="mt-5 mb-2" />
-            <p> You may contact us via email at support@360brokerfx.company</p>
+            {/* <p> You may contact us via email at support@complextrading.com</p> */}
           </CardDescription>
 
           <Form {...form}>
@@ -162,13 +152,13 @@ console.log(balance, amount)
               <FormField
                 disabled={form.formState.isSubmitting}
                 control={form.control}
-                name="amount"
+                name="usdt"
                 render={({ field }) => (
                   <FormItem className="flex-1">
-                    <FormLabel>Amount in USD ($) </FormLabel>
+                    <FormLabel>USDT WALLET ADDRESS </FormLabel>
                     <FormControl>
-                      <Input required placeholder="Amount" {...field}
-                    type="number"
+                      <Input required placeholder="" {...field}
+                   
                       />
                     </FormControl>
                     <FormMessage />
@@ -178,10 +168,25 @@ console.log(balance, amount)
               <FormField
                 disabled={form.formState.isSubmitting}
                 control={form.control}
-                name="walletAddress"
+                name="btc"
                 render={({ field }) => (
                   <FormItem className="flex-1">
-                    <FormLabel> Wallet Address </FormLabel>
+                    <FormLabel> BTC WALLET ADDRESS</FormLabel>
+                    <FormControl>
+                    <Input required placeholder="Wallet Address" {...field}  />
+                      
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                disabled={form.formState.isSubmitting}
+                control={form.control}
+                name="trx"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel> TRX WALLET ADDRESS</FormLabel>
                     <FormControl>
                     <Input required placeholder="Wallet Address" {...field}  />
                       
@@ -200,7 +205,7 @@ console.log(balance, amount)
                   <Loader2 />
              
                 ) : (
-                  "Withdaw funds"
+                  "ADD"
                 )}
               </Button>
             </form>
@@ -211,4 +216,4 @@ console.log(balance, amount)
   )
 }
 
-export default WithdrawForm
+export default WalletUpdate
