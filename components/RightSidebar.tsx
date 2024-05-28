@@ -1,6 +1,6 @@
 import React from "react";
 
-const RightSidebar = ({ user }: RightSidebarProps) => {
+const RightSidebar = ({ user }: any) => {
   return (
     <aside className="right-sidebar">
            <section className="flex flex-col pb-8">

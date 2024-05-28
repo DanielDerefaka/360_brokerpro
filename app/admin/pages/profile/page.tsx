@@ -23,7 +23,7 @@ import { cn } from "@/lib/utils";
 import SpecificUserTransaction from "@/components/SpecificUserTransacction";
 import SpecificWithdrawal from "@/components/SpecificWithdrawal";
 
-const Page = async ({
+const page = async ({
   searchParams,
   username,
 }: {
@@ -173,4 +173,4 @@ const Page = async ({
   );
 };
 
-export default Page;
+export default page;
