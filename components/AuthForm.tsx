@@ -23,7 +23,7 @@ import { authformSchema } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { signIn, signUp } from "@/lib/actions/user.actions";
-import EmailOtp from "./EmailOtp";
+// import EmailOtp from "./EmailOtp";
 
 const AuthForm = ({ type }: { type: string }) => {
   const { toast } = useToast()
@@ -84,7 +84,7 @@ const formSchema = authformSchema(type)
             password: data.password 
         })
 
-        
+
         if(!response){
           return toast({
             variant: "destructive",

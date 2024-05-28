@@ -22,9 +22,9 @@ const {
 
 
 interface UserDocument {
-  $id: string;
-  balance: number;
-  userId: string;
+  $id?: string;
+  balance?: number;
+  userId?: string;
   document?: any
   // Add other fields as necessary
 }
@@ -435,7 +435,7 @@ const userId = user
     const newUser = await database.updateDocument(
       DATABASE_ID!,
       USER_COLLECTION_ID!,
-      documentId,
+      documentId!,
      
       {
         balance: newBalance,
@@ -560,7 +560,8 @@ const getDocumentIdByUserId = async (userId: any): Promise<UserDocument> => {
 
     // Assuming userId is unique, we take the first document
     const document = response.documents[0];
-    return document;
+    return document
+   
   } catch (error) {
     console.error("Error getting document by userId:", error);
     throw error;
@@ -603,12 +604,12 @@ export const UserUpdateBalance = async (userDataBalance: UpdateBalance, { userId
     console.log(currentBalance,amount)
 
     // Calculate the new balance
-    const newBalance = currentBalance + Number(amount);
+    const newBalance = currentBalance! + Number(amount);
 
     const newUser = await database.updateDocument(
       DATABASE_ID!,
       USER_COLLECTION_ID!,
-      documentId,
+      documentId!,
      
       {
         balance: newBalance,
