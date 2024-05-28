@@ -582,8 +582,8 @@ const getDocumentIdStatusByUserId = async (userId:any): Promise<UserTransactionD
     }
 
     // Assuming userId is unique, we take the first document
-    const document = response.documents[0];
-    return document;
+    return parseStringify(response.documents[0])
+    // return document;
   } catch (error) {
     console.error("Error getting document by userId:", error);
     throw error;
