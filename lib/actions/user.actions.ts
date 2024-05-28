@@ -9,77 +9,59 @@ import { randomBytes } from "crypto";
 import { toast } from "react-hot-toast";
 
 const {
-
   APPWRITE_DATABASE_ID: DATABASE_ID,
   APPWRITE_USER_COLLECTION_ID: USER_COLLECTION_ID,
-  APPWRITE_ADMIN_COLLECTION_ID:  ADMIN_COLLECTION_ID,
+  APPWRITE_ADMIN_COLLECTION_ID: ADMIN_COLLECTION_ID,
   APPWRITE_TRANSACTION_COLLECTION_ID: TRANSACTION_ID,
   APPWRITE_TRANSACTION_WITHDRAW_COLLECTION_ID: WITHDRAW_ID,
-  APPWRITE_STORAGE_ID: STORAGE_ID
-
+  APPWRITE_STORAGE_ID: STORAGE_ID,
 } = process.env;
-
-
 
 interface UserDocument {
   $id?: string;
   balance?: number;
   userId?: string;
-  document?: any
+  document?: any;
   // Add other fields as necessary
 }
 
-
-
-export const getUserInfo = async({userId}:getUserInfoProps) =>{
-
+export const getUserInfo = async ({ userId }: getUserInfoProps) => {
   try {
-
-    const {database} = await createAdminClient();
+    const { database } = await createAdminClient();
 
     const user = await database.listDocuments(
       DATABASE_ID!,
       USER_COLLECTION_ID!,
       [Query.equal("userId", userId)]
-    )
+    );
 
-    return parseStringify(user.documents[0])
-    
+    return parseStringify(user.documents[0]);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
+};
 
-
-}
-
-
-
-export const getAdminInfo = async({userId}:getUserInfoProps) =>{
-
+export const getAdminInfo = async ({ userId }: getUserInfoProps) => {
   try {
-
-    const {database} = await createAdminClient();
+    const { database } = await createAdminClient();
 
     const user = await database.listDocuments(
       DATABASE_ID!,
       ADMIN_COLLECTION_ID!,
       [Query.equal("userId", userId)]
-    )
+    );
 
-    return parseStringify(user.documents[0])
-    
+    return parseStringify(user.documents[0]);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-
-
-}
+};
 export const signIn = async ({ email, password }: signInProps) => {
   try {
     // Mutation
     const { account } = await createAdminClient();
     const response = await account.createEmailPasswordSession(email, password);
-    
+
     cookies().set("appwrite-session", response.secret, {
       path: "/",
       httpOnly: true,
@@ -87,87 +69,79 @@ export const signIn = async ({ email, password }: signInProps) => {
       secure: true,
     });
 
-    const user = await getUserInfo({userId: response.userId})
+    const user = await getUserInfo({ userId: response.userId });
     return parseStringify(user);
-  } catch (error:any) {
+  } catch (error: any) {
     console.log("error", error);
     // return error;
 
-  //   if (error instanceof AppwriteException) {
-  //     // Handle Appwrite-specific errors (e.g., email conflicts)
-  //     return parseStringify({
-  //             success: false,
-  //             error: { code: error.code, message: error.message },
-  //         })
-          
-    
-  
-    
-    
-  // }
+    //   if (error instanceof AppwriteException) {
+    //     // Handle Appwrite-specific errors (e.g., email conflicts)
+    //     return parseStringify({
+    //             success: false,
+    //             error: { code: error.code, message: error.message },
+    //         })
+
+    // }
+  }
 };
-}
 
 export const signUp = async (userData: SignUpParams) => {
-    const { email, password, firstName, lastName } = userData;
-    try {
-      // Mutation (Create user account)
-      const { account, database } = await createAdminClient();
-      const  balance  = 0
-      const newUserAccount = await account.create(
+  const { email, password, firstName, lastName } = userData;
+  try {
+    // Mutation (Create user account)
+    const { account, database } = await createAdminClient();
+    const balance = 0;
+    const newUserAccount = await account.create(
+      ID.unique(),
+      email,
+      password,
+      `${firstName} ${lastName}`
+    );
+
+    const newUser = await database.createDocument(
+      DATABASE_ID!,
+      USER_COLLECTION_ID!,
+      ID.unique(),
+
+      {
+        ...userData,
+        userId: newUserAccount.$id,
+        balance: balance,
+      }
+    );
+
+    // Create email session (for immediate login)
+    const session = await account.createEmailPasswordSession(email, password);
+    cookies().set("appwrite-session", session.secret, {
+      path: "/",
+      httpOnly: true,
+      sameSite: "strict",
+      secure: true,
+    });
+
+    // Email verification using magic URL (ensure custom domain configuration for production)
+    if (newUserAccount) {
+      const verificationToken = await account.createMagicURLToken(
         ID.unique(),
         email,
-        password,
-        `${firstName} ${lastName}`,
+        // Replace with your custom domain for verification URL (e.g., "https://your-app-domain.com/verify")
+        "https://360-brokerpro.vercel.app/verify" // Temporary workaround for local development
       );
-  
 
-      const newUser = await database.createDocument(
-        DATABASE_ID!,
-        USER_COLLECTION_ID!,
-        ID.unique(),
-        
-        {
-          ...userData,
-          userId: newUserAccount.$id,
-          balance: balance,
-          
-        }
-      )
+      // Send the verification email to the user with the verificationToken.secret
+      // You'll need to implement email sending logic using a service like SendGrid or your preferred provider.
 
-      
-      // Create email session (for immediate login)
-      const session = await account.createEmailPasswordSession(email, password);
-      cookies().set("appwrite-session", session.secret, {
-        path: "/",
-        httpOnly: true,
-        sameSite: "strict",
-        secure: true,
-      });
-  
-      // Email verification using magic URL (ensure custom domain configuration for production)
-      if (newUserAccount) {
-        const verificationToken = await account.createMagicURLToken(
-          ID.unique(),
-          email,
-          // Replace with your custom domain for verification URL (e.g., "https://your-app-domain.com/verify")
-          'http://localhost:3000' // Temporary workaround for local development
-        );
-  
-        // Send the verification email to the user with the verificationToken.secret
-        // You'll need to implement email sending logic using a service like SendGrid or your preferred provider.
-  
-        return parseStringify({ user: newUserAccount}); // Indicate unverified state
-      }
-  
-      return parseStringify(newUser); // Shouldn't normally reach here
-    } catch (error:any) {
-      console.error("SignUp Error:", error);
-      // throw error; // Re-throw for potential error handling in the frontend
-     
-  };
-}
-  
+      return parseStringify({ user: newUserAccount }); // Indicate unverified state
+    }
+
+    return parseStringify(newUser); // Shouldn't normally reach here
+  } catch (error: any) {
+    console.error("SignUp Error:", error);
+    // throw error; // Re-throw for potential error handling in the frontend
+  }
+};
+
 // ... your initilization functions
 
 export async function getLoggedInUser() {
@@ -175,9 +149,7 @@ export async function getLoggedInUser() {
     const { account } = await createSessionClient();
     const result = await account.get();
 
-    const user = await getUserInfo({userId: result.$id})
-
-
+    const user = await getUserInfo({ userId: result.$id });
 
     return parseStringify(user);
   } catch (error) {
@@ -221,9 +193,7 @@ export async function getAdminLoggedInUser() {
     const { account } = await createSessionClient();
     const result = await account.get();
 
-    const user = await getAdminInfo({userId: result.$id})
-
-
+    const user = await getAdminInfo({ userId: result.$id });
 
     return parseStringify(user);
   } catch (error) {
@@ -231,13 +201,12 @@ export async function getAdminLoggedInUser() {
   }
 }
 
-
 export const adminSignIn = async ({ email, password }: signInProps) => {
   try {
     // Mutation
     const { account } = await createAdminClient();
     const response = await account.createEmailPasswordSession(email, password);
-    
+
     cookies().set("appwrite-session", response.secret, {
       path: "/",
       httpOnly: true,
@@ -245,107 +214,69 @@ export const adminSignIn = async ({ email, password }: signInProps) => {
       secure: true,
     });
 
-    const user = await getAdminInfo({userId: response.userId})
+    const user = await getAdminInfo({ userId: response.userId });
     return parseStringify(user);
   } catch (error) {
     console.log("error", error);
   }
 };
 
-
-
 export const adminGetUsers = async () => {
-
   try {
-
     const { account, database } = await createAdminClient();
 
     const user = await database.listDocuments(
       DATABASE_ID!,
-      USER_COLLECTION_ID!,
-     
-    )
+      USER_COLLECTION_ID!
+    );
 
-    return parseStringify(user.documents)
-    
+    return parseStringify(user.documents);
   } catch (error) {
-
     console.error("Error fetching users:", error);
-    
   }
-
-
-}
-
+};
 
 export const adminGetAllTransaction = async () => {
-
   try {
-
     const { account, database } = await createAdminClient();
 
-    const user = await database.listDocuments(
-      DATABASE_ID!,
-      TRANSACTION_ID!,
-     
-    )
+    const user = await database.listDocuments(DATABASE_ID!, TRANSACTION_ID!);
 
-    return parseStringify(user.documents)
-    
+    return parseStringify(user.documents);
   } catch (error) {
-
     console.error("Error fetching users:", error);
-    
   }
+};
 
-
-}
-
-
-export const getUserInfoParams = async({userId}:getUserInfoProps) =>{
-
+export const getUserInfoParams = async ({ userId }: getUserInfoProps) => {
   try {
-
-    const {database} = await createAdminClient();
+    const { database } = await createAdminClient();
 
     const user = await database.listDocuments(
       DATABASE_ID!,
       USER_COLLECTION_ID!,
       [Query.equal("userId", userId)]
-    )
+    );
 
-    return parseStringify(user.documents[0])
-
-
-   
-    
+    return parseStringify(user.documents[0]);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-
-
-}
-
-
-
-
-
+};
 
 export const UserDeposit = async (userData: Deposit) => {
-
   try {
     // Mutation (Create user account)
-    const {  database } = await createAdminClient();
+    const { database } = await createAdminClient();
 
     const { account } = await createSessionClient();
-  
+
     const result = await account.get();
 
-    const user =  result.$id
+    const user = result.$id;
 
-    const typeofTransaction = 'DEPOSIT'
-    const transactionId = parseInt(randomBytes(5).toString('hex'), 16); 
-
+    const typeofTransaction = "DEPOSIT";
+    const transactionId = parseInt(randomBytes(5).toString("hex"), 16);
 
     // file
 
@@ -360,12 +291,11 @@ export const UserDeposit = async (userData: Deposit) => {
       throw Error;
     }
 
-
     const newUser = await database.createDocument(
       DATABASE_ID!,
       TRANSACTION_ID!,
       ID.unique(),
-      
+
       {
         ...userData,
         user,
@@ -373,12 +303,8 @@ export const UserDeposit = async (userData: Deposit) => {
         transactionId,
         imageUrl: fileUrl,
         imageId: uploadedFile.$id,
-
-      
       }
-    )
-
-   
+    );
 
     return parseStringify(newUser); // Shouldn't normally reach here
   } catch (error) {
@@ -387,141 +313,105 @@ export const UserDeposit = async (userData: Deposit) => {
   }
 };
 
-
-export const UserWithdraw = async (userData: Withdraw , balance:any) => {
-
-
+export const UserWithdraw = async (userData: Withdraw, balance: any) => {
   try {
     // Mutation (Create user account)
-    const {  database } = await createAdminClient();
+    const { database } = await createAdminClient();
 
     const { account } = await createSessionClient();
-  
+
     const result = await account.get();
 
-    const user =  result.$id
-  
-    const balances = balance
-    const amount = userData.amount
+    const user = result.$id;
 
-    const status = 'pending'
-    const transactionId = parseInt(randomBytes(5).toString('hex'), 16); 
-    const balancecheck = balances <= amount!
+    const balances = balance;
+    const amount = userData.amount;
 
-const userId = user
+    const status = "pending";
+    const transactionId = parseInt(randomBytes(5).toString("hex"), 16);
+    const balancecheck = balances <= amount!;
 
-      const newUser = await database.createDocument(
-        DATABASE_ID!,
-        WITHDRAW_ID!,
-        ID.unique(),
-        
-        {
-          ...userData,
-          user,
-          status,
-          transactionId,
-   
-        }
-      )
-  
-      if(newUser){
-        const balanced = balance.balance
-    const newBalance = balanced - amount!;
-    const document = await getDocumentIdByUserId(userId);
-    console.log(balance, newBalance)
+    const userId = user;
 
-    const documentId = document.$id;
-
-    const newUser = await database.updateDocument(
+    const newUser = await database.createDocument(
       DATABASE_ID!,
-      USER_COLLECTION_ID!,
-      documentId!,
-     
+      WITHDRAW_ID!,
+      ID.unique(),
+
       {
-        balance: newBalance,
+        ...userData,
+        user,
+        status,
+        transactionId,
       }
     );
-      }
-      return parseStringify(newUser); // Shouldn't normally reach here
-    
-      
-  
 
-    
+    if (newUser) {
+      const balanced = balance.balance;
+      const newBalance = balanced - amount!;
+      const document = await getDocumentIdByUserId(userId);
+      console.log(balance, newBalance);
+
+      const documentId = document.$id;
+
+      const newUser = await database.updateDocument(
+        DATABASE_ID!,
+        USER_COLLECTION_ID!,
+        documentId!,
+
+        {
+          balance: newBalance,
+        }
+      );
+    }
+    return parseStringify(newUser); // Shouldn't normally reach here
   } catch (error) {
     console.error("SignUp Error:", error);
     throw error; // Re-throw for potential error handling in the frontend
   }
-    
-
-   
 };
 
-
-export const getUserTransaction = async({userId}:getUserInfoProps) =>{
-
+export const getUserTransaction = async ({ userId }: getUserInfoProps) => {
   try {
+    const { database } = await createAdminClient();
 
-    const {database} = await createAdminClient();
+    const user = await database.listDocuments(DATABASE_ID!, TRANSACTION_ID!, [
+      Query.equal("user", userId),
+    ]);
 
-    const user = await database.listDocuments(
-      DATABASE_ID!,
-      TRANSACTION_ID!,
-      [Query.equal("user", userId)]
-    )
-
-    return parseStringify(user.documents)
-    
+    return parseStringify(user.documents);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
+};
 
-
-}
-
-export const getUserWithdrawalTransaction = async({userId}:getUserInfoProps) =>{
-
+export const getUserWithdrawalTransaction = async ({
+  userId,
+}: getUserInfoProps) => {
   try {
+    const { database } = await createAdminClient();
 
-    const {database} = await createAdminClient();
+    const user = await database.listDocuments(DATABASE_ID!, WITHDRAW_ID!, [
+      Query.equal("user", userId),
+    ]);
 
-    const user = await database.listDocuments(
-      DATABASE_ID!,
-      WITHDRAW_ID!,
-      [Query.equal("user", userId)]
-    )
-
-    return parseStringify(user.documents)
-    
+    return parseStringify(user.documents);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
+};
 
-
-}
-
-
-
-export const getUserTransactionTest = async() =>{
-
+export const getUserTransactionTest = async () => {
   try {
+    const { database } = await createAdminClient();
 
-    const {database} = await createAdminClient();
+    const user = await database.listDocuments(DATABASE_ID!, TRANSACTION_ID!);
 
-    const user = await database.listDocuments(
-      DATABASE_ID!,
-      TRANSACTION_ID!,
-     
-    )
-
-    return parseStringify(user.documents[0])
-    
+    return parseStringify(user.documents[0]);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-
-
-}
+};
 
 // export const getUserTransactionbyId = async(userId:any) =>{
 
@@ -536,14 +426,12 @@ export const getUserTransactionTest = async() =>{
 //     )
 
 //     return parseStringify(user.documents[0])
-    
+
 //   } catch (error) {
 //     console.log(error)
 //   }
 
-
 // }
-
 
 const getDocumentIdByUserId = async (userId: any): Promise<UserDocument> => {
   try {
@@ -551,30 +439,31 @@ const getDocumentIdByUserId = async (userId: any): Promise<UserDocument> => {
     const response = await database.listDocuments(
       DATABASE_ID!,
       USER_COLLECTION_ID!,
-      [Query.equal('userId', userId)]
+      [Query.equal("userId", userId)]
     );
 
     if (response.documents.length === 0) {
-     console.log(`No document found for userId: ${userId}`);
+      console.log(`No document found for userId: ${userId}`);
     }
 
     // Assuming userId is unique, we take the first document
     const document = response.documents[0];
-    return document
-   
+    return document;
   } catch (error) {
     console.error("Error getting document by userId:", error);
     throw error;
   }
 };
 
-const getDocumentIdStatusByUserId = async (userId:any): Promise<UserTransactionDoc> => {
+const getDocumentIdStatusByUserId = async (
+  userId: any
+): Promise<UserTransactionDoc> => {
   try {
     const { database } = await createAdminClient();
     const response = await database.listDocuments(
       DATABASE_ID!,
       TRANSACTION_ID!,
-      [Query.equal('user', userId)]
+      [Query.equal("user", userId)]
     );
 
     if (response.documents.length === 0) {
@@ -582,7 +471,7 @@ const getDocumentIdStatusByUserId = async (userId:any): Promise<UserTransactionD
     }
 
     // Assuming userId is unique, we take the first document
-    return parseStringify(response.documents[0])
+    return parseStringify(response.documents[0]);
     // return document;
   } catch (error) {
     console.error("Error getting document by userId:", error);
@@ -590,9 +479,11 @@ const getDocumentIdStatusByUserId = async (userId:any): Promise<UserTransactionD
   }
 };
 
-
-export const UserUpdateBalance = async (userDataBalance: UpdateBalance, { userId }: getUserInfoProps) => {
-  const { amount} = userDataBalance;
+export const UserUpdateBalance = async (
+  userDataBalance: UpdateBalance,
+  { userId }: getUserInfoProps
+) => {
+  const { amount } = userDataBalance;
   try {
     // Mutation (Update user account balance)
     const { database } = await createAdminClient();
@@ -601,7 +492,7 @@ export const UserUpdateBalance = async (userDataBalance: UpdateBalance, { userId
     const documentId = document.$id;
     const currentBalance = document.balance;
 
-    console.log(currentBalance,amount)
+    console.log(currentBalance, amount);
 
     // Calculate the new balance
     const newBalance = currentBalance! + Number(amount);
@@ -610,7 +501,7 @@ export const UserUpdateBalance = async (userDataBalance: UpdateBalance, { userId
       DATABASE_ID!,
       USER_COLLECTION_ID!,
       documentId!,
-     
+
       {
         balance: newBalance,
       }
@@ -623,9 +514,8 @@ export const UserUpdateBalance = async (userDataBalance: UpdateBalance, { userId
   }
 };
 
-
 export const UserUpdateStatus = async (userStatus: UpdateStatus) => {
-  const { status, transactionId, userId, amount} = userStatus;
+  const { status, transactionId, userId, amount } = userStatus;
   try {
     // Mutation (Update user account balance)
     const { database } = await createAdminClient();
@@ -636,7 +526,7 @@ export const UserUpdateStatus = async (userStatus: UpdateStatus) => {
     // const transactionId = transaction.transactionId
     // const currentBalance = document.balance;
 
-    console.log(transactionId, userId, status, amount)
+    console.log(transactionId, userId, status, amount);
 
     // Calculate the new balance
     // const newBalance = currentBalance + Number(amount);
@@ -645,9 +535,9 @@ export const UserUpdateStatus = async (userStatus: UpdateStatus) => {
     //   DATABASE_ID!,
     //   USER_COLLECTION_ID!,
     //   documentId,
-     
+
     //   {
-       
+
     //   }
     // );
 
@@ -660,7 +550,6 @@ export const UserUpdateStatus = async (userStatus: UpdateStatus) => {
 
 // ============================== UPLOAD FILE
 export async function uploadFile(file: File) {
-
   const { storage } = await createAdminClient();
   try {
     const uploadedFile = await storage.createFile(
@@ -696,7 +585,6 @@ export async function getFilePreview(fileId: string) {
   }
 }
 
-
 // ============================== DELETE FILE
 export async function deleteFile(fileId: string) {
   const { storage } = await createAdminClient();
@@ -708,3 +596,17 @@ export async function deleteFile(fileId: string) {
     console.log(error);
   }
 }
+
+export const verifyMagicUrl = async () => {
+  try {
+    const { account } = await createSessionClient();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const secret = urlParams.get("secret");
+    const userId = urlParams.get("userId");
+
+    const user = await account.updateMagicURLSession(userId!, secret!);
+  } catch (error) {
+    console.log(error);
+  }
+};

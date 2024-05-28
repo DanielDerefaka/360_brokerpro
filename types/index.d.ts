@@ -43,10 +43,22 @@ declare type UpdateBalance = {
 
   amount?: string;
 
+}
+
+
+
+declare type MagicUrl = {
+
+  userId?: any;
+  secret?:any
+
   
 
 
 }
+
+
+
 
 declare type UpdateStatus = {
 
