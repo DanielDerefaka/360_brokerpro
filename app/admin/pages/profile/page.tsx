@@ -23,13 +23,13 @@ import { cn } from "@/lib/utils";
 import SpecificUserTransaction from "@/components/SpecificUserTransacction";
 import SpecificWithdrawal from "@/components/SpecificWithdrawal";
 
-const page = async ({
-  searchParams,
-  username,
-}: {
-  searchParams: { userId: string };
-  username: string;
-}) => {
+interface PageProps {
+  searchParams: { userId: string }; // Define the type for searchParams
+  username: String; // Change 'username' to be inside 'params'
+}
+
+const page = async ({ searchParams, username }: PageProps) => {
+  
   if (searchParams.userId) {
     console.log(searchParams.userId);
   }
@@ -43,7 +43,9 @@ const page = async ({
   const userData = getUserDetails;
 
   const userlist = await getUserTransaction({ userId: searchParams.userId });
-  const userlistWithdraw = await getUserWithdrawalTransaction({ userId: searchParams.userId });
+  const userlistWithdraw = await getUserWithdrawalTransaction({
+    userId: searchParams.userId,
+  });
 
   return (
     // <section className="home">
@@ -165,7 +167,10 @@ const page = async ({
             <SpecificUserTransaction userlist={userlist} userData={userData} />
           </TabsContent>
           <TabsContent value="withdrawal">
-          <SpecificWithdrawal userlist={userlistWithdraw} userData={userData} />
+            <SpecificWithdrawal
+              userlist={userlistWithdraw}
+              userData={userData}
+            />
           </TabsContent>
         </Tabs>
       </section>
