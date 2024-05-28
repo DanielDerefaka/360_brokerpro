@@ -1,26 +1,35 @@
-import { verifyMagicUrl } from '@/lib/actions/user.actions';
-import React from 'react'
+// app/verify/page.tsx
+"use client";
 
-interface PageProps {
-    searchParams: { userId: string , secret: string}; // Define the type for searchParams
-  }
-  
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-const page = ({ searchParams }: PageProps) => {
+const VerifyPage = ({verifyUser}:any) => {
+  const router = useRouter();
+  const searchParams = new URLSearchParams(window.location.search);
+  const userId = searchParams.get("userId");
+  const secret = searchParams.get("secret");
 
- const userId = searchParams?.userId;
- const secret = searchParams?.secret;
+  useEffect(() => {
+    if (userId && secret) {
+      // Call a function to update the user's verification status in your database
+      verifyUser(userId, secret) 
+        .then(() => {
+          router.push("/"); // Redirect to the home page after successful verification
+        })
+        .catch((error:any) => {
+          console.error("Verification error:", error);
+          // Handle verification errors appropriately
+        });
+    }
+  }, [userId, secret, router]); // Include dependencies in the useEffect array
 
-//   if (!userId) {
-//     console.error("UserId is required");
-//     return null;
-//   }
-
-  const verify = verifyMagicUrl( )
-
+  // Render a loading state or a verification status message
   return (
-    <div>page</div>
-  )
-}
+    <div>
+      <h1>Verifying your email...</h1>
+    </div>
+  );
+};
 
-export default page
+export default VerifyPage;
