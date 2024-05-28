@@ -59,6 +59,7 @@
     "react-hook-form": "^7.51.3",
     "react-hot-toast": "^2.4.1",
     "react-resizable-panels": "^2.0.19",
+    "sentry": "^0.1.2",
     "sonner": "^1.4.41",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",

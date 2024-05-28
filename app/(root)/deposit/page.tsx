@@ -38,7 +38,7 @@ const FormSchema = z.object({
   file: z.custom<File[]>(),
 });
 
-const Page: React.FC<{ post: any }> = ({ post }) => {
+const page: React.FC<{ post: any }> = ({ post }) => {
   const loggedIn = getLoggedInUser();
   // Define state to store the selected value
   const [selectedCoin, setSelectedCoin] = useState<string>("");
@@ -247,4 +247,4 @@ const Page: React.FC<{ post: any }> = ({ post }) => {
   );
 };
 
-export default Page;
+export default page;
