@@ -25,6 +25,7 @@ interface UserDocument {
   $id: string;
   balance: number;
   userId: string;
+  document?: any
   // Add other fields as necessary
 }
 

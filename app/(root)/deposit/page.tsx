@@ -1,7 +1,7 @@
 "use client";
+import React, { useEffect, useState } from "react";
 import HeaderBox from "@/components/HeaderBox";
 import CryptoSelect from "@/components/CryptoSelect";
-
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -26,39 +26,31 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+
 import { Loader2 } from "lucide-react";
 import { UserDeposit, getLoggedInUser } from "@/lib/actions/user.actions";
 import FileUploaderMain from "@/components/FileUploaderMain";
 
+// Define the form schema with zod
 const FormSchema = z.object({
-  deposit: z.string({
-    required_error: "Please a coin.",
-  }),
-
-  amount: z.string({
-    required_error: "Please enter an amount.",
-  }),
+  deposit: z.string().nonempty("Please select a coin."),
+  amount: z.string().nonempty("Please enter an amount."),
   file: z.custom<File[]>(),
- 
-
 });
 
-
-
-const page =  (post:any) => {
-  const loggedIn =  getLoggedInUser()
+const Page: React.FC<{ post: any }> = ({ post }) => {
+  const loggedIn = getLoggedInUser();
   // Define state to store the selected value
-  const [selectedCoin, setSelectedCoin] = useState("");
-  const [isLoading, setisLoading] = useState(false);
-  const [deposit, setdeposit] = useState(null);
+  const [selectedCoin, setSelectedCoin] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [deposit, setDeposit] = useState<any>();
 
   const handleCoinSelection = (value: string) => {
     setSelectedCoin(value);
     // You can use the selected value here to perform any desired action
     console.log("Selected Coin:", value);
-    // Call your function or perform any other action here
 
+    // Example wallet addresses for selected coins
     if (value === "USDT") {
       return "usdt wallet";
     }
@@ -73,44 +65,28 @@ const page =  (post:any) => {
     defaultValues: {
       deposit: "",
       amount: "",
-      file: []
+      file: [],
     },
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    // toast({
-    //   title: "You submitted the following values:",
-    //   description: (
-    //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-    //       <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-    //     </pre>
-    //   ),
-    // });
-    setisLoading(true);
-
-
+    setIsLoading(true);
 
     try {
-
-
       const userData = {
-        
         deposit: data.deposit,
         amount: data.amount,
-        file: data.file
-       
-      }
-     
-          const newUser = await UserDeposit(userData);
+        file: data.file,
+      };
 
-          setdeposit(newUser) 
-
+      const newUser = await UserDeposit(userData);
+      setDeposit(newUser);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
-      setisLoading(false);
-  }
-  }
+      setIsLoading(false);
+    }
+  };
 
   return (
     <section className="home">
@@ -119,13 +95,13 @@ const page =  (post:any) => {
           <HeaderBox
             type="greeting"
             title="Deposit"
-            subtext="Deposit crypto currency into your account smoothly ."
+            subtext="Deposit cryptocurrency into your account smoothly."
           />
         </header>
         <div className="gap-4 flex md:flex-row flex-col">
           <div className="border-[1px] border-gray-100 p-5 rounded-sm shadow-sm w-full">
             <div>
-             <Form {...form}>
+              <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="w-2/3 space-y-6"
@@ -143,7 +119,7 @@ const page =  (post:any) => {
                             // Update state and call the function
                             setSelectedCoin(newValue);
                             handleCoinSelection(newValue);
-                            // Also update the form field value if needed
+                            // Also update the form field value
                             field.onChange(newValue);
                           }}
                           defaultValue={field.value}
@@ -155,30 +131,27 @@ const page =  (post:any) => {
                           </FormControl>
                           <SelectContent className="bg-white">
                             <SelectItem value="BTC" className="cursor-pointer">
-                              Bitcoin (BTC){" "}
+                              Bitcoin (BTC)
                             </SelectItem>
                             <SelectItem value="USDT" className="cursor-pointer">
-                              USDT{" "}
+                              USDT
                             </SelectItem>
-                            {/* <SelectItem value="m@support.com" className="cursor-pointer" >m@support.com</SelectItem> */}
                           </SelectContent>
                         </Select>
-
                         <FormMessage />
                       </FormItem>
                     )}
                   />
 
                   {/* Amount input */}
-
                   <FormField
                     control={form.control}
                     name="amount"
                     render={({ field }) => (
-                      <div className="form-item">
+                      <FormItem>
                         <FormLabel className="form-label">Amount</FormLabel>
-                        <div className="flex w-fulll flex-col">
-                          <FormControl className="">
+                        <div className="flex w-full flex-col">
+                          <FormControl>
                             <Input
                               placeholder="100"
                               className="input-class"
@@ -189,31 +162,29 @@ const page =  (post:any) => {
                           </FormControl>
                           <FormMessage className="form-message mt-2" />
                         </div>
-                      </div>
+                      </FormItem>
                     )}
                   />
 
-<FormField
+                  {/* File upload */}
+                  <FormField
                     control={form.control}
                     name="file"
                     render={({ field }) => (
-                      <div className="form-item">
-                        <FormLabel className="form-label">Amount</FormLabel>
-                        <div className="flex w-fulll flex-col">
-                          <FormControl className="">
-                            <FileUploaderMain 
-                            fieldChange={field.onChange}
-                            mediaUrl={post?.mediaUrl}
+                      <FormItem>
+                        <FormLabel className="form-label">File</FormLabel>
+                        <div className="flex w-full flex-col">
+                          <FormControl>
+                            <FileUploaderMain
+                              fieldChange={field.onChange}
+                              mediaUrl={post?.mediaUrl}
                             />
                           </FormControl>
                           <FormMessage className="form-message mt-2" />
                         </div>
-                      </div>
+                      </FormItem>
                     )}
                   />
-
-
-
 
                   <Button
                     type="submit"
@@ -233,25 +204,21 @@ const page =  (post:any) => {
               </Form>
             </div>
 
-            {/* <p>Selected Coin: {selectedCoin}</p> */}
             <p className="text-gray-300 text-[15px] mt-5">
-              Coin will be deposited after 1 network confirmation{" "}
+              Coin will be deposited after 1 network confirmation.
             </p>
-
             <p className="text-gray-300 text-[15px] mt-3">
-              Until 2 confirmations are made an equivalent of your asset will be
-              temporarily unavailable for withdrawal{" "}
+              Until 2 confirmations are made, an equivalent of your asset will
+              be temporarily unavailable for withdrawal.
             </p>
           </div>
 
-          <div className="border-[1px]  bg-blue-600  border-gray-100 p-5 rounded-sm shadow-sm w-full">
+          <div className="border-[1px] bg-blue-600 border-gray-100 p-5 rounded-sm shadow-sm w-full">
             <div>
               <p className="text-2xl font-bold text-white">
-                {" "}
                 {selectedCoin} Address:
               </p>
               <p className="font-bold text-2xl text-white">
-                {" "}
                 {selectedCoin === "BTC" && "ndindkndkdnbibbwoiebebbebubepa"}
                 {selectedCoin === "USDT" && "usdt wallet"}
               </p>
@@ -266,19 +233,18 @@ const page =  (post:any) => {
             </div>
             <div className="mt-5">
               <p className="text-[15px] text-white">
-                Send only {selectedCoin} to the deposit address{" "}
+                Send only {selectedCoin} to the deposit address.
               </p>
-              <p  className="text-[15px] text-white">
-                Send other than {selectedCoin} to the deposit address will
-                result in loss of asset{" "}
+              <p className="text-[15px] text-white">
+                Sending other than {selectedCoin} to the deposit address will
+                result in loss of asset.
               </p>
             </div>
           </div>
         </div>
-    
       </div>
     </section>
   );
 };
 
-export default page;
+export default Page;
