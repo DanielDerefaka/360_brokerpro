@@ -35,7 +35,7 @@ import FileUploaderMain from "./FileUploaderMain";
 const FormSchema = z.object({
   deposit: z.string().nonempty("Please select a coin."),
   amount: z.string().nonempty("Please enter an amount."),
-  file: z.custom<File[]>(),
+  trx: z.string().nonempty("Please enter an amount."),
 });
 const DepositForm = (post:any) => {
 
@@ -65,7 +65,7 @@ const DepositForm = (post:any) => {
     defaultValues: {
       deposit: "",
       amount: "",
-      file: [],
+      trx: "",
     },
   });
 
@@ -76,7 +76,7 @@ const DepositForm = (post:any) => {
       const userData = {
         deposit: data.deposit,
         amount: data.amount,
-        file: data.file,
+        file: data.trx,
       };
 
       const newUser = await UserDeposit(userData);
@@ -169,15 +169,18 @@ const DepositForm = (post:any) => {
                   {/* File upload */}
                   <FormField
                     control={form.control}
-                    name="file"
+                    name="trx"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="form-label">File</FormLabel>
+                        <FormLabel className="form-label">Amount</FormLabel>
                         <div className="flex w-full flex-col">
                           <FormControl>
-                            <FileUploaderMain
-                              fieldChange={field.onChange}
-                              mediaUrl={post?.mediaUrl}
+                            <Input
+                              placeholder="100"
+                              className="input-class"
+                              type="text"
+                              {...field}
+                              required
                             />
                           </FormControl>
                           <FormMessage className="form-message mt-2" />

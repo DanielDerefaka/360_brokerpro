@@ -282,16 +282,7 @@ export const UserDeposit = async (userData: Deposit) => {
 
     // file
 
-    const uploadedFile = await uploadFile(userData.file[0]);
-
-    if (!uploadedFile) throw Error;
-
-    // Get file url
-    const fileUrl = getFilePreview(uploadedFile.$id);
-    if (!fileUrl) {
-      await deleteFile(uploadedFile.$id);
-      throw Error;
-    }
+    
 
     const newUser = await database.createDocument(
       DATABASE_ID!,
@@ -303,8 +294,8 @@ export const UserDeposit = async (userData: Deposit) => {
         user,
         typeofTransaction,
         transactionId,
-        imageUrl: fileUrl,
-        imageId: uploadedFile.$id,
+        
+        
       }
     );
 
