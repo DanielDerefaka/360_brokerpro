@@ -126,7 +126,8 @@ export const signUp = async (userData: SignUpParams) => {
         ID.unique(),
         email,
         // Replace with your custom domain for verification URL (e.g., "https://your-app-domain.com/verify")
-        "https://360-brokerpro.vercel.app/verify" // Temporary workaround for local development
+        // "https://360-brokerpro.vercel.app/verify/" // Temporary workaround for local development
+        // "http://localhost:3000/"
       );
 
       // Send the verification email to the user with the verificationToken.secret
