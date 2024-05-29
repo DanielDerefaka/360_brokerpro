@@ -83,8 +83,8 @@ amount?:string;
 
 declare type OtpParams = {
 
+  otp?: any
   userId?: string
-  otp?: string
 
 
 };

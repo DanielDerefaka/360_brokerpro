@@ -140,19 +140,27 @@ export const signUp = async (userData: SignUpParams) => {
 
     // Email verification using magic URL (ensure custom domain configuration for production)
     if (newUserAccount) {
-      const verificationToken = await account.createMagicURLToken(
-        ID.unique(),
-        email,
+      // const verificationToken = await account.createMagicURLToken(
+      //   ID.unique(),
+      //   email,
         // Replace with your custom domain for verification URL (e.g., "https://your-app-domain.com/verify")
         // "https://360-brokerpro.vercel.app/verify/" // Temporary workaround for local development
         // "http://localhost:3000/"
         // `https://${process.env.NEXT_PUBLIC_SITE_URL}/verify`  
-      );
+      // );
 
       // Send the verification email to the user with the verificationToken.secret
       // You'll need to implement email sending logic using a service like SendGrid or your preferred provider.
 
-      return parseStringify({ user: newUserAccount }); // Indicate unverified state
+      const sessionToken = await account.createEmailToken(
+        ID.unique(),
+        email
+    );
+
+    const userId = sessionToken.userId;
+    return userId
+
+      // return parseStringify({ user: newUserAccount }); // Indicate unverified state
     }
 
     return parseStringify(newUser); // Shouldn't normally reach here
@@ -177,6 +185,22 @@ export async function getLoggedInUser() {
   }
 }
 
+export async function getLoggedInUserPro() {
+  try {
+    const { account } = await createSessionClient();
+    const result = await account.get();
+
+    const user =  result.$id
+
+  
+
+    return parseStringify(user[0])
+
+  } catch (error) {
+    return null;
+  }
+}
+
 export const logoutAccount = async () => {
   try {
     const { account } = await createSessionClient();
@@ -189,23 +213,31 @@ export const logoutAccount = async () => {
   }
 };
 
-// export const emailOtp = async ({ otp }: OtpParams) => {
-//   const { account } = await createAdminClient();
-//   const promise = account.createEmailToken(
-//     ID.unique(),
-//     "email@example.com",
-//     true
-//   );
+export const emailOtp = async ( userData : OtpParams) => {
 
-//   promise.then(
-//     function (response) {
-//       console.log(response); // Success
-//     },
-//     function (error) {
-//       console.log(error); // Failure
-//     }
-//   );
-// };
+  const {otp, userId} = userData
+  const { account } = await createAdminClient();
+  
+
+  try {
+    // const result = await account.get();
+    // const userId = await getUserInfo({ userId: result.$id });
+
+    const session = await account.createSession(
+      userId!,
+      otp
+      
+    
+  );
+// console.log(userId, otp)
+
+  return parseStringify(session);
+    
+  } catch (error) {
+    console.log(error)
+  }
+
+};
 
 // ADMIN
 export async function getAdminLoggedInUser() {

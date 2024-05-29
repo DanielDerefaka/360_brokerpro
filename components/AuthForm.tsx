@@ -145,7 +145,7 @@ const formSchema = authformSchema(type)
       </header>
       {user ? (
         <div className="flex flex-col gap-4">
-           <Link href="/" >
+           <Link href={`/otp?userid=${user}`} >
            <Button type="submit" className="form-btn" disabled={isLoading}>
             Get Started
             </Button>
