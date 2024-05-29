@@ -77,13 +77,19 @@ const page =  ({ searchParams }: PageProps) => {
       const newUser = await emailOtp(userData);
       if(!newUser){
         return toast({
-          title: "Authenttication Up Failed ",
+          title: "Authentication Failed ",
           description: "Input the correct otp code sent to your emaill.",
           className:"bg-red-500"
         })
       }
 
       if(newUser){
+        return toast({
+          title: "Authentication Sucessful ",
+          description: "You will be redirected shortly.",
+          className:"bg-green-700"
+        })
+
        router.push('/')
         
       }
