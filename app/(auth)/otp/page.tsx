@@ -84,13 +84,14 @@ const page =  ({ searchParams }: PageProps) => {
       }
 
       if(newUser){
+      form.reset()
+       router.push('/')
         return toast({
           title: "Authentication Sucessful ",
           description: "You will be redirected shortly.",
           className:"bg-green-700"
         })
 
-       router.push('/')
         
       }
       setisauthenticated(newUser!);
