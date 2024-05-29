@@ -256,13 +256,30 @@ const formSchema = authformSchema(type)
                 ? "Dont have an account? "
                 : "Already have an account?"}
             </p>
+            
             <Link
               className="form-link"
               href={type === "sign-in" ? "/sign-up" : "/sign-in"}
             >
               {type === "sign-in" ? "Sign up" : "Sign in"}
             </Link>
+
+            
           </footer>
+          <div className="justify-center flex">
+          <p className="text-14 font-normal text-red-600 ">
+          <Link
+              className=""
+              href="/verifyEmail"
+            >
+                   
+          {type === "sign-in"
+                && "  Forgot Password  "}
+            </Link>
+         
+            
+           </p>
+          </div>
         </>
       )}
     </section>

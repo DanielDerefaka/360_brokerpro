@@ -685,3 +685,66 @@ export const verifyMagicUrl = async () => {
     console.log(error);
   }
 };
+
+
+export const Recovery = async (userData:RecoveryParam) => {
+  const {email} = userData
+  try {
+    const { account } = await createAdminClient();
+
+
+    
+    const user = await account.createRecovery(email, 'https://360broker.company/passwordReset');
+    
+
+    return parseStringify(user)
+    // console.log(user)
+
+  
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const VerifyRecovery = async (userData:VerifyRecoveryParam) => {
+  const {userId, password, secret} = userData
+  try {
+    const { account } = await createSessionClient();
+
+    
+    const user = await account.updateRecovery(
+      userId,
+      secret,
+      password,
+      
+  );
+
+  if(user) {
+
+    const { database } = await createAdminClient();
+    const document = await getDocumentIdByUserId(userId);
+
+    const documentId = document.$id;
+ 
+
+    
+    const newUser = await database.updateDocument(
+      DATABASE_ID!,
+      USER_COLLECTION_ID!,
+      documentId!,
+
+      {
+        password: password,
+      }
+    );
+    
+
+  }
+    return parseStringify(user)
+    // console.log(user)
+
+  
+  } catch (error) {
+    console.log(error);
+  }
+};

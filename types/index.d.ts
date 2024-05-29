@@ -80,6 +80,19 @@ amount?:string;
 
 
 }
+declare type RecoveryParam = {
+email?:any;
+
+
+}
+declare type VerifyRecoveryParam = {
+  userId?:any;
+  secret?:any;
+  password?:any;
+  
+  
+}
+
 
 declare type OtpParams = {
 

@@ -27,31 +27,29 @@ import Image from "next/image";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast"
-import { emailOtp, getLoggedInUser } from "@/lib/actions/user.actions";
+import { Recovery, emailOtp, getLoggedInUser } from "@/lib/actions/user.actions";
 import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
-  otp: z.string().length(6, "OTP must be exactly 6 digits"),
+  email: z.string(),
 });
 
-interface PageProps {
-  searchParams: { userid: string }; // Define the type for searchParams
-}
+// interface PageProps {
+//   searchParams: { userid: string }; // Define the type for searchParams
+// }
 
-const page =  ({ searchParams }: PageProps) => {
+const page =  () => {
   const { toast } = useToast()
   const router = useRouter()
   // console.log(loggedIn.userId)
-  console.log(searchParams.userid);
-  const userId = searchParams.userid;
-  console.log(userId);
+  
 
   const [isLoading, setIsLoading] = useState(false)
     const [isauthenticated, setisauthenticated] = useState('')
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      otp: "",
+      email: "",
     },
   });
 
@@ -60,32 +58,30 @@ const page =  ({ searchParams }: PageProps) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
 
-    
-   
 
     // const userIdp = userId.userId.userId
 
     try {
       const userData = {
-        otp: values.otp,
-        userId: userId
+        email: values.email,
+     
         
       };
 
      
       
-      const newUser = await emailOtp(userData);
+      const newUser = await Recovery(userData);
       if(!newUser){
         return toast({
-          title: "Authentication Failed ",
-          description: "Input the correct otp code sent to your email.",
+          title: "Email Verification Failed ",
+          description: "Do you have an account with the associated email",
           className:"bg-red-500"
         })
       }
 
       if(newUser){
       form.reset()
-       router.push('/')
+      setisauthenticated(newUser)
         return toast({
           title: "Authentication Sucessful ",
           description: "You will be redirected shortly.",
@@ -94,7 +90,7 @@ const page =  ({ searchParams }: PageProps) => {
 
         
       }
-      setisauthenticated(newUser!);
+    
     } catch (error) {
       console.log(error);
     } finally {
@@ -114,37 +110,40 @@ const page =  ({ searchParams }: PageProps) => {
           </h1>
         </Link>
 
+       <div className="flex flex-col gap-1 md:gap-3">
+          
+          <p className="text-16 font-normal text-gray-600">
+            {isauthenticated
+              && (
+                <div>
+                    <p> We sent a confrimation email  </p>
+                </div>
+              )
+             }
+          </p>
+        </div>
 
+
+        {!isauthenticated ? (
         <div className="flex flex-col gap-1 md:gap-3">
           <h1 className="text-24 lg:text-26 font-semibold text-gray-900">
-            Authentication Otp
+           Enter your email
           </h1>
           
         </div>
-
+        ): "" }
       </header>
+      {!isauthenticated ? (
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
-            name="otp"
+            name="email"
             render={({ field }) => (
               <FormItem>
                 {/* <FormLabel>Authentication Otp</FormLabel> */}
                 <FormControl>
-                  <InputOTP maxLength={6} {...field}>
-                    <InputOTPGroup>
-                      <InputOTPSlot index={0} />
-                      <InputOTPSlot index={1} />
-                      <InputOTPSlot index={2} />
-                    </InputOTPGroup>
-                    <InputOTPSeparator />
-                    <InputOTPGroup>
-                      <InputOTPSlot index={3} />
-                      <InputOTPSlot index={4} />
-                      <InputOTPSlot index={5} />
-                    </InputOTPGroup>
-                  </InputOTP>
+                  <Input placeholder="" {...field}/>
                 </FormControl>
                 {/* <FormDescription>
                   This is your public display name.
@@ -169,6 +168,7 @@ const page =  ({ searchParams }: PageProps) => {
               </div>
         </form>
       </Form>
+      ) : ""}
     </section>
     </section>
   );
