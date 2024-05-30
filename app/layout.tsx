@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster"
 // import toast, { Toaster } from 'react-hot-toast';
 
 import "./globals.css";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
 const ibmPlexSerif = IBM_Plex_Serif({
@@ -29,7 +30,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${ibmPlexSerif.variable}`}>{children}
+      <body className={`${inter.variable} ${ibmPlexSerif.variable}`}>
+    
+        
+        {children}
+     
       <Toaster />
       </body>
     </html>

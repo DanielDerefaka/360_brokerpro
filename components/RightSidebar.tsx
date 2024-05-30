@@ -1,4 +1,5 @@
 import React from "react";
+import { ModeToggle } from "./site/modetoggle";
 
 const RightSidebar = ({ user }: any) => {
   return (
@@ -17,7 +18,9 @@ const RightSidebar = ({ user }: any) => {
             <p className="profile-email">
               {user.email}
             </p>
+
           </div>
+          {/* <ModeToggle/> */}
         </div>
       </section>
 

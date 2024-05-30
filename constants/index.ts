@@ -1,7 +1,7 @@
 export const sidebarLinks = [
   {
     imgURL: "/icons/home.svg",
-    route: "/",
+    route: "/dashboard",
     label: "Home",
   },
   {
@@ -50,6 +50,36 @@ export const adminsidebarLinks = [
   },
   
 ];
+
+export const pricingCards = [
+  {
+    title: 'Bronze',
+    description: 'Starter plan',
+    price: '$1000',
+    duration: '',
+    highlight: 'Key features',
+    features: ['Minmum Deposit: $1000', 'Minimum experience'],
+    priceId: '',
+  },
+  {
+    title: 'Gold',
+    description: 'Advanced plan',
+    price: '$5000',
+    duration: 'i',
+    highlight: 'Key features',
+    features: ['10% Daily Income', '24/7 Support team'],
+    priceId: 'price_1OYxkqFj9oKEERu1KfJGWxgN',
+  },
+  {
+    title: 'Silver',
+    description: 'Re-occuring plan',
+    price: '$3000',
+    duration: 'month',
+    highlight: 'Everything in Starter, plus',
+    features: ['5% Daily Income', '24/7 Support team'],
+    priceId: 'price_1OYxkqFj9oKEERu1NbKUxXxN',
+  },
+]
 
 
 // good_user / good_password - Bank of America

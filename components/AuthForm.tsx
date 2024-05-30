@@ -100,7 +100,7 @@ const formSchema = authformSchema(type)
         //   setApiError(error.message)
         // }
 
-        if(response) router.push('/')
+        if(response) router.push('/dashboard')
        }
 
     } catch (error:any) {
