@@ -84,7 +84,7 @@ const page = ({ searchParams }: PageProps) => {
         if (!newUser) {
           return toast({
             title: "Authentication Failed ",
-            description: "Input the correct otp code sent to your emaill.",
+            description: "Password Reset Error.",
             className: "bg-red-500",
           });
         }
