@@ -709,7 +709,7 @@ export const Recovery = async (userData:RecoveryParam) => {
 export const VerifyRecovery = async (userData:VerifyRecoveryParam) => {
   const {userId, password, secret} = userData
   try {
-    const { account } = await createSessionClient();
+    const { account } = await createAdminClient();
 
     
     const user = await account.updateRecovery(
