@@ -24,7 +24,7 @@ const page = async () => {
       <div className="flex gap-4 xl:!flex-row flex-col">
         <Card className="xl:w-[400px] w-full  h-[200px] bg-blue-600">
           <CardHeader>
-            <CardDescription className='text-2xl font-bold'>Balance</CardDescription>
+            <CardDescription className='text-2xl text-white font-bold'>Balance</CardDescription>
             <CardTitle className="text-4xl mb-5 text-white">
               
             {loggedIn.balance}
@@ -34,18 +34,18 @@ const page = async () => {
 
             <div className="flex flex-col gap-4 xl:flex-row mt-5">
               <Link href="/deposit">
-                <Button className='bg-white'>
-                  <CrossIcon  className='text-blue-600'/>
+                <Button className=''>
+                  <CrossIcon  className='text-white'/>
                   <span className="ml-2  font-bold">Deposit</span>
                 </Button>
               </Link>
 
-              <Link href="/withdraw">
-                <Button className="bg-white hover:bg-none">
+              {/* <Link href="/withdraw">
+                <Button className=" hover:bg-none">
                   <Wallet className='' />
                   <span className="ml-2">Withdraw</span>
                 </Button>
-              </Link>
+              </Link> */}
             </div>
           </CardHeader>
         </Card>
