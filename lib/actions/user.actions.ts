@@ -356,6 +356,78 @@ export const UserDeposit = async (userData: Deposit) => {
   }
 };
 
+export const updateDetails = async (
+  userData: updateDetails,
+ 
+) => {
+  const { FirstName, LastName, password, email } = userData;
+  try {
+    // Mutation (Update user account balance)
+    const { database } = await createAdminClient();
+    const { account } = await createSessionClient();
+
+    const result = await account.get();
+
+    const userId = result.$id;
+    const document = await getDocumentIdByUserId(userId);
+
+    const documentId = document.$id;
+   
+    
+
+    // Calculate the new balance
+  
+    const newUser = await database.updateDocument(
+      DATABASE_ID!,
+      USER_COLLECTION_ID!,
+      documentId!,
+
+      {
+        firstName: FirstName ,
+        lastName: LastName,
+        email: email,
+        password: password
+      }
+    );
+
+    return parseStringify(newUser); // Shouldn't normally reach here
+  } catch (error) {
+    console.error("Update Balance Error:", error);
+    throw error; // Re-throw for potential error handling in the frontend
+  }
+};
+export const getuserpro = async () => {
+  try {
+    // Mutation (Create user account)
+    const { database } = await createAdminClient();
+
+    const { account } = await createSessionClient();
+
+    const result = await account.get();
+
+    const userId = result.$id;
+
+
+    
+
+    const newUser = await database.listDocuments(
+      DATABASE_ID!,
+      USER_COLLECTION_ID!,
+      [
+        Query.equal("userId", userId),
+      ]);
+    
+
+    
+    
+    
+
+    return parseStringify(newUser.documents[0]); // Shouldn't normally reach here
+  } catch (error) {
+    console.error("SignUp Error:", error);
+    throw error; // Re-throw for potential error handling in the frontend
+  }
+};
 export const UserWithdraw = async (userData: Withdraw, balance: any) => {
   try {
     // Mutation (Create user account)

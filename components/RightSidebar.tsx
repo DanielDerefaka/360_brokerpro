@@ -1,5 +1,6 @@
 import React from "react";
 import { ModeToggle } from "./site/modetoggle";
+import WidgetMain from "./WidgetMain";
 
 const RightSidebar = ({ user }: any) => {
   return (
@@ -21,6 +22,10 @@ const RightSidebar = ({ user }: any) => {
 
           </div>
           {/* <ModeToggle/> */}
+        </div>
+
+        <div className="mt-20">
+          <WidgetMain/>
         </div>
       </section>
 

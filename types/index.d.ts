@@ -54,6 +54,15 @@ declare type UpdateBalance = {
 
 }
 
+declare type updateDetails = {
+
+  FirstName?: string;
+  LastName?: string;
+  password?: string;
+  email?:string
+
+}
+
 
 
 declare type MagicUrl = {
@@ -239,6 +248,10 @@ declare interface HeaderBoxProps {
 }
 
 declare interface MobileNavProps {
+  user: User;
+}
+
+declare interface ProfileParam {
   user: User;
 }
 

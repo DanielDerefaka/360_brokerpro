@@ -20,9 +20,9 @@ export const sidebarLinks = [
     label: "Withdraw",
   },
   {
-    imgURL: "/icons/money-send.svg",
-    route: "/charts",
-    label: "Charts",
+    imgURL: "/icons/people.svg",
+    route: "/profile",
+    label: "Profile",
   },
 ];
 

@@ -4,6 +4,7 @@ import TotalBalanceBox from "@/components/TotalBalanceBox";
 import RightSidebar from "@/components/RightSidebar";
 import { getLoggedInUser, getUserInfoParams } from "@/lib/actions/user.actions";
 import RecentTransactions from "@/components/RecentTransactions";
+import LandingTrading from "@/components/LandingTrading";
 
 const page = async () => {
   const loggedIn = await getLoggedInUser();
@@ -27,7 +28,7 @@ const page = async () => {
           totalCurrentBalance={userlist.balance}
           />
         </header>
-        <RecentTransactions/>
+       <LandingTrading/>
       </div>
     <RightSidebar user={loggedIn} />
     </section>
