@@ -252,7 +252,7 @@ declare interface MobileNavProps {
 }
 
 declare interface ProfileParam {
-  user: User;
+  user: any;
 }
 
 declare interface PageHeaderProps {

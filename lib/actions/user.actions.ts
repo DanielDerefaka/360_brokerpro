@@ -383,10 +383,7 @@ export const updateDetails = async (
       documentId!,
 
       {
-        firstName: FirstName ,
-        lastName: LastName,
-        email: email,
-        password: password
+       ...userData
       }
     );
 

@@ -3,11 +3,11 @@ import ProfileSetting from "@/components/ProfileSetting";
 import { getLoggedInUser, getuserpro } from "@/lib/actions/user.actions";
 import React from "react";
 
-const page = () => {
-    const loggedIn = getLoggedInUser();
+const page = async () => {
+    const loggedIn = await  getLoggedInUser();
     // const userId = loggedIn.userId
     // const getuser = getuserpro()
-    // console.log(loggedIn)
+    console.log(loggedIn.userId)
     // console.log(getuser)
     
   return (

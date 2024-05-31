@@ -42,7 +42,6 @@ import { Loader2 } from "lucide-react";
 
 const FormSchema = z.object({
   Firstname: z.string(),
-  email: z.string(),
   password: z.string(),
   Lastname: z.string()
 });
@@ -54,14 +53,14 @@ const ProfileSetting = ({user}:ProfileParam) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast()
 //   const getuser = getuserpro()
-  
+  // console.log(user.value.email)
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       Firstname: user.firstName,
       Lastname: user.lastName,
-      email: user.email,
+
       password: '',
     },
   });
@@ -77,9 +76,8 @@ const ProfileSetting = ({user}:ProfileParam) => {
     try {
 
         const userData = {
-            LastName: data.Lastname,
-            FirstName: data.Firstname,
-            email: data.email,
+            lastName: data.Lastname,
+            firstName: data.Firstname,
             password: data.password
           };
     
@@ -154,20 +152,22 @@ const ProfileSetting = ({user}:ProfileParam) => {
                 />
               </div>
 
-              <FormField
-                disabled
+              {/* <FormField
+                // disabled
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem className="flex-1">
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder={user.email} disabled {...field} />
+                      <Input placeholder={user.email}  {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
+
+              {/* <p>{user.email} </p> */}
 
               <FormField
                 disabled={form.formState.isSubmitting}
@@ -186,7 +186,7 @@ const ProfileSetting = ({user}:ProfileParam) => {
 
               <Button className="form-btn" type="submit">
                 {isLoading ? (
-                  <Loader2 />
+                  <Loader2 /> 
                 ) : (
                   "Save User Details"
                 )}
