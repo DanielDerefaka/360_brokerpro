@@ -321,13 +321,13 @@ const DepositForm = (wallet: any) => {
                         
                        
                         {selectedCoin === "usdt" && (
-                         <Image src="/icons/usdt.jpg" alt="wallet" className="w-[400px] mt-4" width={100} height={50} />
+                         <Image src="/icons/usdt.JPG" alt="wallet" className="w-[400px] mt-4" width={100} height={50} />
                          )}
                         {selectedCoin === "btc" && (
-                          <Image src="/icons/btc.jpg" alt="wallet"  className="w-[400px]"  width={100} height={50} />
+                          <Image src="/icons/btc.JPG" alt="wallet"  className="w-[400px]"  width={100} height={50} />
                         )}
                         {selectedCoin === "trx" && (
-                          <Image src="/icons/trx.jpg" alt="wallet"  className="w-[400px]"   width={100} height={50} />
+                          <Image src="/icons/trx.JPG" alt="wallet"  className="w-[400px]"   width={100} height={50} />
                         )}
                       </div>
 
