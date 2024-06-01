@@ -26,6 +26,7 @@ declare type Deposit = {
   amount?: string;
   user?: string;
   ImageUrl?: string
+  proof?:string
 
 
 }

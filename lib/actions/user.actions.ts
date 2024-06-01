@@ -341,8 +341,6 @@ export const UserDeposit = async (userData: Deposit) => {
 
     // file
 
-    
-
     const newUser = await database.createDocument(
       DATABASE_ID!,
       TRANSACTION_ID!,
