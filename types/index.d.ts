@@ -54,6 +54,13 @@ declare type UpdateBalance = {
 
 }
 
+declare type Reply = {
+
+  reply?: string;
+  ticketId?: string;
+
+}
+
 declare type updateDetails = {
 
   FirstName?: string;
@@ -61,6 +68,10 @@ declare type updateDetails = {
   password?: string;
   email?:string
 
+}
+
+declare type support = {
+  message?: string
 }
 
 

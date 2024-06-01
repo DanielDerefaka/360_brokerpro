@@ -15,7 +15,8 @@ const {
   APPWRITE_TRANSACTION_COLLECTION_ID: TRANSACTION_ID,
   APPWRITE_TRANSACTION_WITHDRAW_COLLECTION_ID: WITHDRAW_ID,
   APPWRITE_STORAGE_ID: STORAGE_ID,
-  APPWRITE_WALLET_COLLECTION_ID: WALLET_ID
+  APPWRITE_WALLET_COLLECTION_ID: WALLET_ID,
+  APPWRITE_SUPPORT_COLLECTION_ID: SUPPORT_ID
   
 } = process.env;
 
@@ -26,6 +27,14 @@ interface UserDocument {
   document?: any;
   // Add other fields as necessary
 }
+
+interface TicketDocument {
+  $id?: string;
+  reply?: string;
+  document?: any;
+  // Add other fields as necessary
+}
+
 
 export const getUserInfo = async ({ userId }: getUserInfoProps) => {
   try {
@@ -393,6 +402,49 @@ export const updateDetails = async (
     throw error; // Re-throw for potential error handling in the frontend
   }
 };
+
+export const supportMessage = async (
+  userData: support,
+ 
+) => {
+  const { message } = userData;
+  try {
+    // Mutation (Update user account balance)
+    const { database } = await createAdminClient();
+    const { account } = await createSessionClient();
+
+    const result = await account.get();
+
+    const userId = result.$id;
+    // const document = await getDocumentIdByUserId(userId);
+
+    // const documentId = document.$id;
+   
+    const ticketId = randomBytes(5).toString("hex");
+
+
+
+    // Calculate the new balance
+  
+    const newUser = await database.createDocument(
+      DATABASE_ID!,
+      SUPPORT_ID!,
+      ID.unique(),
+
+      {
+       ...userData,
+       userId,
+       ticketId
+       
+      }
+    );
+
+    return parseStringify(newUser); // Shouldn't normally reach here
+  } catch (error) {
+    console.error("Update Balance Error:", error);
+    throw error; // Re-throw for potential error handling in the frontend
+  }
+};
 export const getuserpro = async () => {
   try {
     // Mutation (Create user account)
@@ -598,6 +650,29 @@ const getDocumentIdByUserId = async (userId: any): Promise<UserDocument> => {
     throw error;
   }
 };
+
+const getDocumentIdByTicketId = async (ticketId: any): Promise<TicketDocument> => {
+  try {
+    const { database } = await createAdminClient();
+    const response = await database.listDocuments(
+      DATABASE_ID!,
+      SUPPORT_ID!,
+      [Query.equal("ticketId", ticketId)]
+    );
+
+    if (response.documents.length === 0) {
+      console.log(`No document found for ticketId: ${ticketId}`);
+    }
+
+    // Assuming userId is unique, we take the first document
+    const document = response.documents[0];
+    return document;
+  } catch (error) {
+    console.error("Error getting document by userId:", error);
+    throw error;
+  }
+};
+
 
 const getDocumentIdStatusByUserId = async (
   userId: any
@@ -815,5 +890,103 @@ export const VerifyRecovery = async (userData:VerifyRecoveryParam) => {
   
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const getSupport = async () => {
+  try {
+    const { database } = await createAdminClient();
+     
+   
+    const user = await database.listDocuments(
+      DATABASE_ID!,
+      SUPPORT_ID!,
+
+    );
+
+    return parseStringify(user.documents);
+   
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
+export const getSupportById = async (ticketId:any) => {
+  try {
+    const { database } = await createAdminClient();
+     
+   
+    const user = await database.listDocuments(
+      DATABASE_ID!,
+      SUPPORT_ID!,
+      [Query.equal("ticketId", ticketId)]
+
+    );
+
+    return parseStringify(user.documents[0]);
+   
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+export const getSupportByUserId = async () => {
+  try {
+    const { database } = await createAdminClient();
+    const { account } = await createSessionClient();
+
+    const result = await account.get();
+
+    const userId = result.$id;
+     
+   
+    const user = await database.listDocuments(
+      DATABASE_ID!,
+      SUPPORT_ID!,
+      [Query.equal("userId", userId)]
+
+    );
+
+    return parseStringify(user.documents);
+   
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const ReplySupport = async (
+  userData: Reply,
+ 
+) => {
+  const { reply, ticketId } = userData;
+  try {
+    // Mutation (Update user account balance)
+    const { database } = await createAdminClient();
+    const document = await getDocumentIdByTicketId(ticketId);
+
+    const documentId = document.$id;
+
+  
+
+    // Calculate the new balance
+ 
+
+    const newUser = await database.updateDocument(
+      DATABASE_ID!,
+      SUPPORT_ID!,
+      documentId!,
+
+      {
+        responce: reply,
+      }
+    );
+
+    return parseStringify(newUser); // Shouldn't normally reach here
+  } catch (error) {
+    console.error("Support:", error);
+    throw error; // Re-throw for potential error handling in the frontend
   }
 };

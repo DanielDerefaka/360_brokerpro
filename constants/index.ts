@@ -24,6 +24,11 @@ export const sidebarLinks = [
     route: "/profile",
     label: "Profile",
   },
+  {
+    imgURL: "/icons/connect-bank.svg",
+    route: "/help",
+    label: "Help-support",
+  },
 ];
 
 
@@ -47,6 +52,11 @@ export const adminsidebarLinks = [
     imgURL: "/icons/money-send.svg",
     route: "/admin/pages/verify",
     label: "Wallet",
+  },
+  {
+    imgURL: "/icons/connect-bank.svg",
+    route: "/admin/pages/support",
+    label: "Support",
   },
   
 ];
