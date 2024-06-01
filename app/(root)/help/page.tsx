@@ -14,9 +14,9 @@ const page = async () => {
       <div className="transactions-header">
         <HeaderBox
           // type="greeting"
-          title="Profile "
+          title="Support "
           // user={loggedIn?.name || "Guest"}
-          subtext="User profile page."
+          subtext="User Support page."
         />
       </div>
 
