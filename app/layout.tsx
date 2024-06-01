@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster"
 
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import JivoChat from "@/components/Chatbot";
 
 const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
 const ibmPlexSerif = IBM_Plex_Serif({
@@ -34,7 +35,7 @@ export default function RootLayout({
     
         
         {children}
-     
+     <JivoChat/>
       <Toaster />
       </body>
     </html>

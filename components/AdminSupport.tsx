@@ -30,6 +30,7 @@ const AdminSupport = async () => {
 
   return (
     <section>
+      
       {supportList.map((ticket: any) => (
         <div  key={ticket.userId}>
         <Card className="w-full mb-2" >
