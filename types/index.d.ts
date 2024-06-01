@@ -31,6 +31,15 @@ declare type Deposit = {
 
 }
 
+declare type Invest = {
+
+  Plan?: string;
+ 
+  amount?:any
+
+
+}
+
 declare type Withdraw = {
 
   withdrawAddress?: string;

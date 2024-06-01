@@ -16,7 +16,8 @@ const {
   APPWRITE_TRANSACTION_WITHDRAW_COLLECTION_ID: WITHDRAW_ID,
   APPWRITE_STORAGE_ID: STORAGE_ID,
   APPWRITE_WALLET_COLLECTION_ID: WALLET_ID,
-  APPWRITE_SUPPORT_COLLECTION_ID: SUPPORT_ID
+  APPWRITE_SUPPORT_COLLECTION_ID: SUPPORT_ID,
+  APPWRITE_INVEST_ID:INVEST_ID
   
 } = process.env;
 
@@ -355,6 +356,66 @@ export const UserDeposit = async (userData: Deposit) => {
         
       }
     );
+
+    return parseStringify(newUser); // Shouldn't normally reach here
+  } catch (error) {
+    console.error("SignUp Error:", error);
+    throw error; // Re-throw for potential error handling in the frontend
+  }
+};
+
+export const UserInvest = async (userData: Invest, balance:any) => {
+
+  const {amount} = userData
+  try {
+    // Mutation (Create user account)
+    const { database } = await createAdminClient();
+
+    const { account } = await createSessionClient();
+
+    const result = await account.get();
+
+    const userId = result.$id;
+
+    // const typeofTransaction = "DEPOSIT";
+    const InvestmentId = randomBytes(5).toString("hex");
+    const status = 'active'
+    // file
+
+    const newUser = await database.createDocument(
+      DATABASE_ID!,
+      INVEST_ID!,
+      ID.unique(),
+
+      {
+        ...userData,
+        userId,
+        InvestmentId,
+        status
+        
+        
+      }
+    );
+
+    if (newUser) {
+      const balanced = balance;
+      const newBalance = balanced - amount!;
+      const document = await getDocumentIdByUserId(userId);
+      console.log(balance, newBalance);
+
+      const documentId = document.$id;
+
+      const newUser = await database.updateDocument(
+        DATABASE_ID!,
+        USER_COLLECTION_ID!,
+        documentId!,
+
+        {
+          balance: newBalance,
+        }
+      );
+      
+      }
 
     return parseStringify(newUser); // Shouldn't normally reach here
   } catch (error) {
