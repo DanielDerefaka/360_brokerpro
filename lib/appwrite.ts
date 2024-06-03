@@ -1,6 +1,6 @@
 // src/lib/server/appwrite.js
 "use server";
-import { Client, Account, Databases, Users, Storage } from "node-appwrite";
+import { Client, Account, Databases, Users, Storage, Messaging } from "node-appwrite";
 import { cookies } from "next/headers";
 
 
@@ -59,7 +59,12 @@ export async function createAdminClient() {
   },
     get user() {
         return  new Users(client)
-    }
+    },
+
+    get message() {
+      return new Messaging(client);
+    },
+  
   };
 }
 

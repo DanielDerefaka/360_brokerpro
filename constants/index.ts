@@ -65,7 +65,7 @@ export const adminsidebarLinks = [
   },
   {
     imgURL: "/icons/transaction.svg",
-    route: "/invest",
+    route: "/admin/pages/invest",
     label: "Investment Plans",
   },
   

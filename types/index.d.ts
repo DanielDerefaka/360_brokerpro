@@ -123,6 +123,14 @@ declare type VerifyRecoveryParam = {
   
 }
 
+declare type Message = {
+  subject?:string;
+  content?:any;
+  // password?:any;
+  
+  
+}
+
 
 declare type OtpParams = {
 

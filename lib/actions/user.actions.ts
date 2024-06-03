@@ -17,7 +17,8 @@ const {
   APPWRITE_STORAGE_ID: STORAGE_ID,
   APPWRITE_WALLET_COLLECTION_ID: WALLET_ID,
   APPWRITE_SUPPORT_COLLECTION_ID: SUPPORT_ID,
-  APPWRITE_INVEST_ID:INVEST_ID
+  APPWRITE_INVEST_ID:INVEST_ID,
+  APPQRITTE_MESSAGE_ID:  MESSAGE_ID
   
 } = process.env;
 
@@ -310,6 +311,18 @@ export const adminGetAllTransaction = async () => {
   }
 };
 
+export const adminGetAllInvestment = async () => {
+  try {
+    const { account, database } = await createAdminClient();
+
+    const user = await database.listDocuments(DATABASE_ID!, INVEST_ID!);
+
+    return parseStringify(user.documents);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+  }
+};
+
 export const getUserInfoParams = async ({ userId }: getUserInfoProps) => {
   try {
     const { database } = await createAdminClient();
@@ -414,7 +427,7 @@ export const UserInvest = async (userData: Invest, balance:any) => {
           balance: newBalance,
         }
       );
-      
+
       }
 
     return parseStringify(newUser); // Shouldn't normally reach here
@@ -1047,5 +1060,42 @@ export const ReplySupport = async (
   } catch (error) {
     console.error("Support:", error);
     throw error; // Re-throw for potential error handling in the frontend
+  }
+};
+
+
+export const  Message = async (userData:Message) => {
+  const { subject, content } = userData;
+  try {
+    const { message } = await createAdminClient();
+    const { account } = await createSessionClient();
+
+    const result = await account.get();
+
+    const userId = result.$id;
+
+    const subjectd = 'dx'
+     
+   
+    const messaging = await message.createEmail(
+      MESSAGE_ID!,                          // messageId
+      [subjectd],                             // subject
+      [content],                             // content
+      [],                                      // topics (optional)
+      [userId],                                      // users (optional)
+      [],                                      // targets (optional)
+      [],                                      // cc (optional)
+      [],                                      // bcc (optional)
+      true,                                    // draft (optional)
+      false,                                   // html (optional)
+      ''                                       // scheduledAt (optional)
+  );
+
+  return parseStringify(messaging)
+
+
+   
+  } catch (error) {
+    console.log(error);
   }
 };
