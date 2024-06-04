@@ -29,7 +29,7 @@ const Hero = () => {
       </section>
 
       <div className="justify-center flex mt-5 ">
-        <Link href="/">
+        <Link href="/sign-in">
           <Button className="text-white p-4">Get Started</Button>
         </Link>
       </div>
