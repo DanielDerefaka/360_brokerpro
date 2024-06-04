@@ -159,7 +159,12 @@ const InvestPage = ({ user }: { user:any }) => {
 
       }else {
 
-        setShowInsufficientBalanceDialog(true);
+        router.push("/deposit");
+          return toast({
+            title: "Insuffiecient Balance  ",
+            description: "Please deposit to continue ",
+            className: "bg-red-500",
+          });
 
       }
 
