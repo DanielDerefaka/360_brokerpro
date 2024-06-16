@@ -96,7 +96,7 @@ const InvestDashboard = ({ user }: { user:any }) => {
   const plans = [
     { title: "Bronze", amount: "$500", minDeposit: "$200", maxDeposit: "$500", minReturn: "$600", maxReturn: "$10000", bonus: "$20", duration: "72 Hours" },
     { title: "Silver", amount: "$3000", minDeposit: "$3000", maxDeposit: "$9950", minReturn: "$30000", maxReturn: "$150000", bonus: "$500", duration: "72 Hours" },
-    { title: "Gold", amount: "$20000", minDeposit: "$10000", maxDeposit: "$20000", minReturn: "$100000", maxReturn: "$300000", bonus: "$1000", duration: "72 Hours" },
+    { title: "Gold", amount: "$5000", minDeposit: "$5000", maxDeposit: "$20000", minReturn: "$100000", maxReturn: "$300000", bonus: "$1000", duration: "72 Hours" },
   ];
 
   const form = useForm<z.infer<typeof FormSchema>>({

@@ -10,7 +10,8 @@ import { Button } from "@/components/ui/button";
 import UserProfileadmin from "@/components/UserProfile-admin";
 import SpecificUserTransaction from "@/components/SpecificUserTransacction";
 import SpecificWithdrawal from "@/components/SpecificWithdrawal";
-import EmailForm from "@/components/EmailForm";
+// import EmailForm from "@/components/EmailForm";
+import Mailer from "@/components/EmailForms";
 
 // Interface for PageProps
 interface PageProps {
@@ -90,6 +91,7 @@ const Page = async ({ searchParams }: PageProps) => {
           <TabsContent value="deposit">
             <SpecificUserTransaction userlist={userlist} userData={userData} />
             {/* <EmailForm/> */}
+            <Mailer/>
           </TabsContent>
           <TabsContent value="withdrawal">
             <SpecificWithdrawal

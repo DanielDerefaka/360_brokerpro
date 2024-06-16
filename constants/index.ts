@@ -75,7 +75,7 @@ export const pricingCards = [
   {
     title: 'Bronze',
     description: 'Starter plan',
-    price: '$1000',
+    price: '$500',
     duration: '',
     highlight: 'Key features',
     features: ['Minmum Deposit: $1000', 'Minimum experience'],
